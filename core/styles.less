@@ -1,0 +1,165 @@
+@fontDecorative:      "Kelly Slab", "monotype", "courier new", sans-serif;
+@fontMonoSpace:       "Share Tech Mono", monospace;
+
+@siteWidth:           850px;
+
+@colorBackground:     #f5f5f5;
+@colorBackgroundBox:  #ffffff;
+@colorBackgroundBlue: #205081;
+@colorText:           #424242;
+@colorTextBlue:       #ffffff;
+@colorBorder:         #cccccc;
+
+@colorGreen:          #207c13;
+@colorRed:            #a2060d;
+@colorGrey:           #aaaaaa;
+@colorOrange:         #ff8407;
+@colorBlack:          #424242;
+
+// -------------------------------- All -------------------------------- //
+
+body {
+  margin: 0;
+  padding: 0;
+  background: @colorBackground none top repeat;
+  color: @colorText;
+  a {
+    cursor: pointer;
+    color: @colorText;
+    text-decoration: none;
+    &:hover{
+      color: @colorBackgroundBlue;
+    }
+    * {
+      cursor: pointer;
+    }
+  }
+  .none {
+    display: none;
+  }
+}
+
+// -------------------------------- Top -------------------------------- //
+
+.topLine {
+  width: 100%;
+  display: block;
+  background: @colorBackgroundBlue;
+  color: @colorTextBlue;
+  padding: 10px 0;
+  font-family: @fontDecorative;
+  font-size: 28px;
+  .topLineBox{
+    width: @siteWidth;
+    margin: 0 auto;
+  }
+  .topLineEmail {
+    float: right;
+    input {
+      margin-top: -2px;
+      background: none;
+      color: @colorTextBlue;
+      border: none;
+      text-align: right;
+      width: 500px;
+      cursor: text;
+      &::-webkit-input-placeholder {
+        color: @colorTextBlue;
+      }
+      &:focus {
+        &::-webkit-input-placeholder{
+          opacity: 0.3;
+        }
+      }
+    }
+  }
+}
+
+// -------------------------------- Color -------------------------------- //
+
+.color-green {
+  color: @colorGreen;
+}
+
+.color-red {
+  color: @colorRed;
+}
+
+.color-grey {
+  color: @colorGrey;
+}
+
+.color-orange {
+  color: @colorOrange;
+}
+
+.color-black {
+  color: @colorBlack;
+}
+
+// -------------------------------- Footer -------------------------------- //
+
+#footer {
+  width: 100%;
+  text-align: center;
+  display: block;
+  color: @colorGrey;
+  margin-top: 20px;
+  position: fixed;
+  bottom: 15px;
+}
+
+// -------------------------------- Panda -------------------------------- //
+
+.pandaBox {
+  width: @siteWidth;
+  margin: 50px auto;
+  background: url("./panda.png") top no-repeat;
+  padding-top: 330px;
+  text-align: center;
+}
+
+// -------------------------------- Content -------------------------------- //
+
+.content {
+  width: @siteWidth;
+  margin: 50px auto;
+  border: 1px solid @colorBorder;
+  background-color: @colorBackgroundBox;
+  font-size: 16px;
+  .contentItem {
+    font-family: @fontMonoSpace;
+    color: @colorGrey;
+    margin: 0 10px;
+    padding: 15px 5px;
+    border-bottom: 1px solid @colorBorder;
+    .contentItemUrl {
+      display: inline-block;
+      span {
+        font-size: 22px;
+      }
+    }
+    .icon-sms {
+      cursor: help;
+    }
+    .contentItemIconBox {
+      float: right;
+      font-size: 22px;
+      .contentItemLock {
+        cursor: pointer;
+      }
+      .contentItemHistory {
+        cursor: pointer;
+      }
+      .icon-close {
+        cursor: pointer;
+        &:hover {
+          color: @colorRed;
+        }
+      }
+    }
+  }
+  .contentItemLast {
+    border-bottom: none;
+  }
+}

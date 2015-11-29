@@ -1,0 +1,62 @@
+@font-face {
+	font-family: 'icomoon';
+	src:url('./fonts/icomoon.eot?lnrajd');
+	src:url('./fonts/icomoon.eot?lnrajd#iefix') format('embedded-opentype'),
+		url('./fonts/icomoon.ttf?lnrajd') format('truetype'),
+		url('./fonts/icomoon.woff?lnrajd') format('woff'),
+		url('./fonts/icomoon.svg?lnrajd#icomoon') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+	font-family: 'icomoon';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.icon-close:before {
+	content: "\e209";
+}
+.icon-menu:before {
+	content: "\e20e";
+}
+.icon-sms:before {
+	content: "\e229";
+}
+.icon-vpn_lock:before {
+	content: "\e233";
+}
+.icon-public:before {
+	content: "\e258";
+}
+.icon-star:before {
+	content: "\e260";
+}
+.icon-done:before {
+	content: "\e28a";
+}
+.icon-done_all:before {
+	content: "\e28b";
+}
+.icon-history:before {
+	content: "\e29d";
+}
+.icon-lock:before {
+	content: "\e2ab";
+}
+.icon-lock_outline:before {
+	content: "\e2ad";
+}
+.icon-http:before {
+	content: "\e313";
+}
+
