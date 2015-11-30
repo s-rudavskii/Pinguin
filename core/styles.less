@@ -11,10 +11,11 @@
 @colorBorder:         #cccccc;
 
 @colorGreen:          #207c13;
-@colorRed:            #a2060d;
+@colorRed:            #ca0b0b;
 @colorGrey:           #aaaaaa;
 @colorOrange:         #ff8407;
 @colorBlack:          #424242;
+@colorWhite:          #ffffff;
 
 // -------------------------------- All -------------------------------- //
 
@@ -52,6 +53,21 @@ body {
   .topLineBox{
     width: @siteWidth;
     margin: 0 auto;
+  }
+  .topLineLogo {
+    padding-left: 65px;
+    img {
+      position: absolute;
+      margin: -10px 0 0 -65px;
+      padding: 11px;
+      height: 32px;
+      background-color: @colorBackground;
+    }
+    strong {
+      opacity: 0.4;
+      font-weight: normal;
+      margin-left: 1px;
+    }
   }
   .topLineEmail {
     float: right;
@@ -97,6 +113,10 @@ body {
   color: @colorBlack;
 }
 
+.color-white {
+  color: @colorWhite;
+}
+
 // -------------------------------- Footer -------------------------------- //
 
 #footer {
@@ -111,10 +131,10 @@ body {
 
 // -------------------------------- Panda -------------------------------- //
 
-.pandaBox {
+.penguinBox {
   width: @siteWidth;
-  margin: 50px auto;
-  background: url("./panda.png") top no-repeat;
+  margin: 100px auto;
+  background: url("./penguin.png") top no-repeat;
   padding-top: 330px;
   text-align: center;
 }

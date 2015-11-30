@@ -1,17 +1,16 @@
 <?php include('./core/db.php'); ?>
-<?php
-$filterEmail = isset($_COOKIE['email']) ? $_COOKIE['email'] : '';
-$auth = true;
-?>
+<?php include('./core/function.php'); ?>
+<?php include('./core/secure.php'); ?>
+<?php $filter = isset($_COOKIE['email']) ? $_COOKIE['email'] : ''; ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>Site Monitor</title>
+  <title>Pinguin | Private Site Monitor</title>
   <link rel="stylesheet" type="text/css" href="./core/style.css" media="screen" />
   <link rel="stylesheet/less" type="text/css" href="./core/styles.less" />
   <link rel="stylesheet" type="text/css" href="./core/icon.css" />
-  <link href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAADHklEQVR42u2V20tUQRzHZ+ZcdFdX3dW2JKU9JtRDEXZRwyjEKNtUFoSIwDAJIo18yYL+gR7SQEqFohYMeuglzXKVsqvmJRN6TlzDSBNXXfd42z17pt8su5vHvBa+RMMe5je/+f0+37kvRhtc8H+BdQmUt3t01YcMs38DLG+XgREdZoQFTts/WKTtkhNxQuaNrITuP4Ff75zIUOdnukY9XulBvjSoEbDVvbEIxgRnvF5EBoO+9GZ2Ut164NfeDl90uz21Y/IcEnlRenRqp1Yg784Li8602akoPmTQichsirZX5kgla4FXvPpq/+GaKvbMehFHOEQILz0+s0srcLy6xaI3mp3U70cqVVWB48i2RGOfT4jKvJ29xbcUuOz1iBCpTHcPfp9I80EewQSIGGGOk54UpWkFjt56JkUaNw1Q1a8yP2VFoSQ1KX5SFXX7ao5ZBjTwl0MpZE7+1P/NFYd5TDHGNADEmMAvpelchlMjwIr17nug+pnJRAjLUBQVJZvjkE4fVVB7ckcT6yx1fMmflT1Ph0YnEc8TBgnEh86N48KRMFcrUN+X650ad8AoQiKBGAWmb4qNxslmYy2MDw2NjJe63DLlOY4u4LBZIyE65oSjOL1lSQFWcu29qfNTrl5EUWzQFRgd7Au4cDCJsvVeMGoEHuSOiInb31qS0b+Qt+RNzrnfJcJMehCle4APIEKCEKan4kD7lx/KZzEmPr3tfKZ3MWvFp+Jg1fN6pHiLtFEYwJQdFwoDAC3hYWdF3tnlGKu+RelVTWXq3Nyd4CmhoRxYbkxE8VJPRUHNSvlreuwOVDZn+abd7+CEh5ZKFXT6wx+vFnSslrvm13RvVbNZmfF0INhsXm/I6ruSN7qWvH/o/6C1tZWXZXkrXBaz3+83wabGgTsSbD0hJIZdInYBVTid0Ga1CrULfCr0TYA9BfYYfMOFhYVjvwk0NDQkg8BlCN4NzUSoDUwAEgSwdeEEEAmKMfA0uFSwPVBPwjcEQm1Go/Ge1Wr1L7tEjY2NHAQyMA8D5QEQEeoLzYS9hVDPQhwT8kKcYrPZ6GLWhu/BTycpUCi23O7rAAAAAElFTkSuQmCC" rel="icon" type="image/x-icon">
+  <link href="<?php echo ICO; ?>" rel="icon" type="image/x-icon">
   <script type="text/javascript" src="./core/less.min.js"></script>
   <script type="text/javascript" src="./core/jquery.min.js"></script>
   <script type="text/javascript" src="./core/script.js"></script>
@@ -21,21 +20,29 @@ $auth = true;
   <div class="topLineBox">
     <div class="topLineEmail">
       <?php if($auth) { ?>
-      <input id="filterEmail" type="text" placeholder="Enter you email" value="<?php echo $filterEmail; ?>">
+      <input id="filterEmail" type="text" placeholder="Search..." value="<?php echo $filter; ?>">
       <?php } ?>
     </div>
     <div class="topLineLogo">
-      <span class="icon-public"></span>
-      Site Monitor
+      <img src="<?php echo ICO; ?>" alt="Pinguin Logo">
+      Ping<strong>uin</strong>
     </div>
   </div>
 </div>
 <?php if($auth) { ?>
 <div class="content">
   <?php
-  $res = $db->query("SELECT * FROM site" . ($filterEmail ? " WHERE email = '" . $filterEmail . "'" : ''));
+  $res = $db->query("
+    SELECT *
+    FROM site
+    " . (
+      $filter
+        ? " WHERE email LIKE '%" . $filter . "%' or url LIKE '%" . $filter . "%' or comment LIKE '%" . $filter . "%'"
+        : ''
+    )
+  );
   if ($res) {
-    while($row = $res->fetch(PDO::FETCH_ASSOC)){
+    while($row = $res->fetch()){
       switch($row['active']){
         case 0:
           $iconActive       = 'icon-public';
@@ -64,10 +71,21 @@ $auth = true;
         trim($row['url'], '/')
       );
 
+      $iconBridgeColor = 'color-while';
+      $iconBridgeText = '';
+      if ($row['is_bridge']) {
+        $iconBridgeColor  = 'color-red';
+        $iconBridgeText = 'Bridge not exist';
+        if ($row['bridge_isset']) {
+          $iconBridgeColor  = 'color-green';
+          $iconBridgeText = 'Bridge installed';
+        }
+      }
+
       echo "
-        <div class='contentItem'>
+        <div class='contentItem email-{$row['email']}'>
           <div class='contentItemIconBox'>
-            <span class='icon-http'></span>
+            <span class='icon-http {$iconBridgeColor}' title='{$iconBridgeText}'></span>
             <span class='icon-lock contentItemLock'></span>
             <span class='icon-history contentItemHistory'></span>
             |
@@ -83,16 +101,16 @@ $auth = true;
   <div class="contentItem contentItemLast">...</div>
 </div>
 <?php }  else { ?>
-<div class="pandaBox">
+<div class="penguinBox">
   <h2>Sorry, access denied ...</h2>
-  <p>Our secret battle panda reported:<br>
-    "<strong>Your IP address is not in the whitelist.</strong>"</p>
+  <p>Our secret penguin reported:<br>
+    "<strong>Your IP address (<?php echo $_SERVER['REMOTE_ADDR']; ?>) is not in the whitelist.</strong>"</p>
 
-  <p>Please contact the email address: <br> ILovePanda@mesija.net</p>
+  <p>Please contact the email address: <br> ILovePenguin@mesija.net</p>
 </div>
 <?php }?>
 <div id="footer">
-  Site Monitor 1.0 &nbsp; &nbsp; &nbsp; &copy; 2015 Create by Mesija
+  Pinguin - Private Site Monitor 1.0 &nbsp; &nbsp; &nbsp; &copy; 2015 Create by Mesija
 </div>
 </body>
 </html>
