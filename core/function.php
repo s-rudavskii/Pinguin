@@ -8,10 +8,75 @@ define('ICO', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAMAAABg3Am
  */
 function getStatus($url){
   $headers = @get_headers($url);
-  $status = 0;
-  if ($headers && (int)explode(' ', $headers[0])[1] < 400) {
-    $status = 1;
+  $code = 0;
+  if ($headers) {
+    $code = (int)explode(' ', $headers[0])[1];
   }
 
-  return $status;
+  return $code;
+}
+
+function alert($data, $error = false)
+{
+  $message = array(
+    'error' => $error,
+    'data' => $data
+  );
+  exit(json_encode($message));
+}
+
+if (isset($_POST['action'])){
+  switch($_POST['action']){
+    case 'delete':
+      $res = $db->query("
+        SELECT pass
+        FROM site
+        WHERE id = " . $db->quote($_POST['id']) . "
+      ");
+      $pass = $res->fetch()['pass'];
+      if ($pass && $pass != md5($_POST['pass'])) {
+        alert('Invalid password', true);
+      }
+      $db->query("
+        DELETE FROM site
+        WHERE id = " . $db->quote($_POST['id']) . "
+      ");
+      alert('Site ID: ' . $_POST['id'] . ' delete');
+      break;
+    case 'add':
+      $res = $db->query("
+        SELECT id
+        FROM site
+        WHERE url = " . $db->quote($_POST['url']) . "
+      ");
+
+      if ($res->rowCount() > 0) {
+        alert("Site exist, ID " . $res->fetch()['id'], true);
+      }
+
+      $code = getStatus($_POST['url']);
+      $status = $code < 400 && $code != 0 ? 1 : 0;
+
+      $statusBridge = 0;
+      if ($_POST['bridge']) {
+        $statusBridge = getStatus($_POST['url'] . 'bridge2cart/bridge.php') < 400 && $code != 0 ? 1 : 0;
+      }
+
+      $db->query("
+        INSERT INTO site (url, email, comment, is_bridge, bridge_isset, active, code, pass)
+        VALUES (
+          " . $db->quote($_POST['url']) . ",
+          " . $db->quote($_POST['email']) . ",
+          " . $db->quote($_POST['comment']) . ",
+          " . $db->quote((int)$_POST['bridge']) . ",
+          " . $db->quote($statusBridge) . ",
+          " . $db->quote($status) . ",
+          " . $db->quote($code) . ",
+          " . $db->quote($_POST['pass'] != '' ? md5($_POST['pass']) : '') . "
+        )
+      ");
+
+      alert('Site ' . $_POST['url'] . ' add');
+      break;
+  }
 }

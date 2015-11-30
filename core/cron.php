@@ -6,18 +6,20 @@ include('./function.php');
 $res = $db->query('SELECT * FROM site');
 
 while($row = $res->fetch()){
-  $status = getStatus($row['url']);
+  $code = getStatus($row['url']);
+  $status = $code < 400 && $code != 0 ? 1 : 0;
 
   $statusBridge = 0;
   if ($row['is_bridge']) {
-    $statusBridge = getStatus($row['url'] . 'bridge2cart/bridge.php');
+    $statusBridge = getStatus($row['url'] . 'bridge2cart/bridge.php') < 400 && $code != 0 ? 1 : 0;
   }
 
   $db->query("
     UPDATE site
     SET
       active = {$status},
-      bridge_isset = {$statusBridge}
+      bridge_isset = {$statusBridge},
+      code = {$code}
     WHERE
       id = {$row['id']}
   ");
@@ -48,7 +50,7 @@ while($row = $res->fetch()){
     ' . $text . '
     </div>';
 
-  if($title != ''){
+  if ($title != '' && $row['email'] != '') {
     mail($row['email'], 'Pinguin | ' . $title, $body);
   }
 }

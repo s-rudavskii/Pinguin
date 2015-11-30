@@ -43,22 +43,21 @@
   );
   if ($res) {
     while($row = $res->fetch()){
-      switch($row['active']){
-        case 0:
-          $iconActive       = 'icon-public';
-          $iconActiveColor  = 'color-grey';
-          $iconActiveAlt    = 'Offline';
-          break;
-        case 1:
-          $iconActive       = 'icon-public';
-          $iconActiveColor  = 'color-green';
-          $iconActiveAlt    = 'Online';
-          break;
-        default:
-          $iconActive       = 'icon-vpn_lock';
-          $iconActiveColor  = 'color-orange';
-          $iconActiveAlt    = 'Only proxy';
-          break;
+
+      $iconActive       = 'icon-vpn_lock';
+      $iconActiveColor  = 'color-red';
+      $iconActiveAlt    = 'Error';
+
+      if ($row['code'] < 400 && $row['code'] != 0) {
+        $iconActive       = 'icon-public';
+        $iconActiveColor  = 'color-green';
+        $iconActiveAlt    = 'Online';
+      }
+
+      if (($row['code'] >= 400 && $row['code'] <= 500) || $row['code'] == 0) {
+        $iconActive       = 'icon-public';
+        $iconActiveColor  = 'color-grey';
+        $iconActiveAlt    = 'Offline';
       }
 
       $iconComment = $row['comment'] != ''
@@ -67,7 +66,7 @@
 
       $urlForming = preg_replace(
         '/(http:\/\/|https:\/\/)([^\/]+)(.*)/',
-        '<span class="none">$1</span><span class="color-black">$2</span>$3',
+        '<span class="none">$1</span><a href="' . $row['url'] . '" target="_blank"><span class="color-black">$2</span></a>$3',
         trim($row['url'], '/')
       );
 
@@ -82,23 +81,58 @@
         }
       }
 
+      $iconColorLock = '';
+      $iconDeletePass = 0;
+      if ($row['pass'] != ''){
+        $iconColorLock = 'color-green';
+        $iconDeletePass = 1;
+      }
+
       echo "
-        <div class='contentItem email-{$row['email']}'>
+        <div class='contentItem id-{$row['id']}'>
           <div class='contentItemIconBox'>
             <span class='icon-http {$iconBridgeColor}' title='{$iconBridgeText}'></span>
-            <span class='icon-lock contentItemLock'></span>
+            <span class='icon-lock contentItemLock {$iconColorLock}'></span>
             <span class='icon-history contentItemHistory'></span>
             |
-            <span class='icon-close'></span>
+            <span class='icon-close' onclick=\"deleteSite({$row['id']},{$iconDeletePass},'{$row['url']}')\"></span>
           </div>
-          <span class='{$iconActive} {$iconActiveColor}' title='{$iconActiveAlt}'></span>
+          <span class='{$iconActive} {$iconActiveColor}' title='{$row['code']} | {$iconActiveAlt}'></span>
           <div class='contentItemUrl'>{$urlForming}</div>
           {$iconComment}
         </div>";
     }
   }
   ?>
-  <div class="contentItem contentItemLast">...</div>
+  <div class="contentItem contentItemLast">
+    <form action="./" method="post" class="form-row">
+      <span>
+        <input class="slide-up" id="url" type="text" placeholder="http://" />
+        <label for="url">URL</label>
+      </span>
+      <span>
+        <input class="slide-up" id="email" type="text" placeholder="test@mail.com" />
+        <label for="email">Email</label>
+      </span>
+      <span>
+        <input class="slide-up" id="comment" type="text" placeholder="..." />
+        <label for="comment">Comment</label>
+      </span>
+      <span style="width: 200px; padding-left: 60px; text-align: left;">
+        <div class="squaredOne" style="display: inline-block; position: absolute; margin-top: -5px; margin-left: -40px;">
+          <input style="width: 20px;" id="bridge" type="checkbox" />
+          <label for="bridge"></label>
+        </div> Is bridge
+      </span>
+      <span>
+        <input class="slide-up" id="password" type="text" placeholder="Not required" />
+        <label for="password">Password</label>
+      </span>
+      <span>
+        <input class="form-submit" type="button" value="Add new site" />
+      </span>
+    </form>
+  </div>
 </div>
 <?php }  else { ?>
 <div class="penguinBox">
@@ -112,5 +146,6 @@
 <div id="footer">
   Pinguin - Private Site Monitor 1.0 &nbsp; &nbsp; &nbsp; &copy; 2015 Create by Mesija
 </div>
+<div id="alertBox"></div>
 </body>
 </html>
