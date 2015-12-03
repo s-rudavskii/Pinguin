@@ -24,6 +24,14 @@ function getStatus($url){
   return $code;
 }
 
+function prepareUrl($url){
+  return preg_replace(
+    '/(http:\/\/|https:\/\/)([^\/]+)(.*)/',
+    '$2$3',
+    trim($url, '/')
+  );
+}
+
 
 $res = $db->query('SELECT * FROM site');
 
@@ -51,21 +59,13 @@ while($row = $res->fetch()){
 
   if ($status != $row['active']) {
     if ($status) {
-      $title .= 'Site is now online ' . preg_replace(
-          '/(http:\/\/|https:\/\/)([^\/]+)(.*)/',
-          '$2$3',
-          trim($row['url'], '/')
-        );
+      $title .= 'Site is now online ' . prepareUrl($row['url']);
       $text .= '
         <p>Site: <b>' . $row['url'] . '</b></p>
         <p>Status: <span style="background-color: #207c13; padding: 2px 4px; color: white;">online</span></p>
         <p>Time: ' . date("Y-m-d H:i:s") . '</p>';
     } else {
-      $title .= 'Site down ' . preg_replace(
-          '/(http:\/\/|https:\/\/)([^\/]+)(.*)/',
-          '$2$3',
-          trim($row['url'], '/')
-        );
+      $title .= 'Site down ' . prepareUrl($row['url']);
       $text .= '
         <p>Site: <b>' . $row['url'] . '</b></p>
         <p>Status: <span style="background-color: #ca0b0b; padding: 2px 4px; color: white;">down</span></p>
@@ -86,6 +86,6 @@ while($row = $res->fetch()){
     $headers .= "MIME-Version: 1.0\r\n";
     $headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
 
-    mail($row['email'], 'Pinguin | ' . $title, $body, $headers);
+    mail($row['email'], $title, $body, $headers);
   }
 }
