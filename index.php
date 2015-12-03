@@ -144,7 +144,7 @@
 </div>
 <?php }?>
 <div id="footer">
-  Pinguin - Private Site Monitor 1.0 &nbsp; &nbsp; &nbsp; &copy; 2015 Create by Mesija
+  Pinguin - Private Site Monitor 1.03 &nbsp; &nbsp; &nbsp; &copy; 2015 Create by Mesija
 </div>
 <div id="alertBox"></div>
 </body>

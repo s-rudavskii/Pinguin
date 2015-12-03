@@ -21,7 +21,7 @@ $(document).ready(function(){
       var email = $('#email').val();
       var comment = $('#comment').val();
       var bridge = $('#bridge').is(':checked');
-      var pass = $('#pass').val();
+      var pass = $('#password').val();
 
       if (url.trim() == '') {
         alert('URl is required', 'error');
@@ -35,7 +35,7 @@ $(document).ready(function(){
           url: url,
           email: email,
           comment: comment,
-          bridge: bridge,
+          bridge: bridge ? 1 : 0,
           pass: pass
         },
         function( data ) {

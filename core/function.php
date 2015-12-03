@@ -68,7 +68,7 @@ if (isset($_POST['action'])){
           " . $db->quote($_POST['url']) . ",
           " . $db->quote($_POST['email']) . ",
           " . $db->quote($_POST['comment']) . ",
-          " . $db->quote((int)$_POST['bridge']) . ",
+          " . $db->quote($_POST['bridge']) . ",
           " . $db->quote($statusBridge) . ",
           " . $db->quote($status) . ",
           " . $db->quote($code) . ",
