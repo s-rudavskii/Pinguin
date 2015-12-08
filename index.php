@@ -125,7 +125,7 @@
         </div> Is bridge
       </span>
       <span>
-        <input class="slide-up" id="password" type="text" placeholder="Not required" />
+        <input class="slide-up" id="password" type="password" placeholder="Not required" />
         <label for="password">Password</label>
       </span>
       <span>
