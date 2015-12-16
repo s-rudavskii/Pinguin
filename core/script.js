@@ -24,7 +24,7 @@ $(document).ready(function(){
       var pass = $('#password').val();
 
       if (url.trim() == '') {
-        alert('URl is required', 'error');
+        alert('URL is required', 'error');
         return;
       }
 
